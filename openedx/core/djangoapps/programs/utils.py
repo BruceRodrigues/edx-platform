@@ -7,7 +7,6 @@ from urlparse import urljoin
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.utils.functional import cached_property
-from django.utils.text import slugify
 from opaque_keys.edx.keys import CourseKey
 from pytz import utc
 

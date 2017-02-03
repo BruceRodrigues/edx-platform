@@ -119,6 +119,8 @@ def munge_catalog_program(catalog_program):
             'w435h145': catalog_program['banner_image']['small']['url'],
             'w348h116': catalog_program['banner_image']['x-small']['url'],
         },
+        # If a detail URL has been added, we don't want to lose it.
+        'detail_url': catalog_program.get('detail_url'),
     }
 
 

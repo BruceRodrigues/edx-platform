@@ -8,7 +8,6 @@ from django.core.cache import cache
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.utils import override_settings
-from django.utils.text import slugify
 import mock
 from nose.plugins.attrib import attr
 from opaque_keys.edx.keys import CourseKey

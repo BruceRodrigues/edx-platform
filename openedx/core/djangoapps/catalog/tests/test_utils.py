@@ -123,21 +123,24 @@ class TestGetPrograms(CatalogIntegrationMixin, TestCase):
 
 
 class TestMungeCatalogProgram(TestCase):
-    catalog_program = ProgramFactory()
+    def setUp(self):
+        super(TestMungeCatalogProgram, self).setUp()
 
-    def test_munge_catalog_program(self):
-        munged = munge_catalog_program(self.catalog_program)
+        self.catalog_program = ProgramFactory()
+
+    def assert_munged(self, program):
+        munged = munge_catalog_program(program)
         expected = {
-            'id': self.catalog_program['uuid'],
-            'name': self.catalog_program['title'],
-            'subtitle': self.catalog_program['subtitle'],
-            'category': self.catalog_program['type'],
-            'marketing_slug': self.catalog_program['marketing_slug'],
+            'id': program['uuid'],
+            'name': program['title'],
+            'subtitle': program['subtitle'],
+            'category': program['type'],
+            'marketing_slug': program['marketing_slug'],
             'organizations': [
                 {
                     'display_name': organization['name'],
                     'key': organization['key']
-                } for organization in self.catalog_program['authoring_organizations']
+                } for organization in program['authoring_organizations']
             ],
             'course_codes': [
                 {
@@ -155,17 +158,25 @@ class TestMungeCatalogProgram(TestCase):
                             'marketing_url': course_run['marketing_url'],
                         } for course_run in course['course_runs']
                     ],
-                } for course in self.catalog_program['courses']
+                } for course in program['courses']
             ],
             'banner_image_urls': {
-                'w1440h480': self.catalog_program['banner_image']['large']['url'],
-                'w726h242': self.catalog_program['banner_image']['medium']['url'],
-                'w435h145': self.catalog_program['banner_image']['small']['url'],
-                'w348h116': self.catalog_program['banner_image']['x-small']['url'],
+                'w1440h480': program['banner_image']['large']['url'],
+                'w726h242': program['banner_image']['medium']['url'],
+                'w435h145': program['banner_image']['small']['url'],
+                'w348h116': program['banner_image']['x-small']['url'],
             },
+            'detail_url': program.get('detail_url'),
         }
 
         self.assertEqual(munged, expected)
+
+    def test_munge_catalog_program(self):
+        self.assert_munged(self.catalog_program)
+
+    def test_munge_with_detail_url(self):
+        self.catalog_program['detail_url'] = 'foo'
+        self.assert_munged(self.catalog_program)
 
 
 @mock.patch(UTILS_MODULE + '.get_edx_api_data')
